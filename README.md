@@ -25,6 +25,14 @@ Our Zenith method keeps the useful parts of repeated review while making the loo
 
 <img width="1445" height="1088" alt="Benchmark results: Zenith vs. RALPH variants across eight long-horizon tasks" src="https://github.com/user-attachments/assets/200a7337-38a9-4fa2-91e6-60cc6ce07f5b" />
 
+## Using Zenith with Amp
+
+See [Using Zenith from Amp](AMP.md) for the proposed Amp-first workflow across
+separate project repositories, readiness checks, approval checkpoints, and the
+required compatibility pilot. Adding this repository to an Amp project does not
+install or configure Zenith. Amp integration remains unverified until that
+pilot passes.
+
 ## Quick Start
 
 ### Option 1 — Let your agent install it
