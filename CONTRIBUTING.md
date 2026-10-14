@@ -22,8 +22,7 @@ activation is needed. `.agents/resume` intentionally performs no work.
 
 Setup does not install optional ACP adapters, authenticate providers, initialize
 target workspaces, or start missions. Live provider tests require separate setup
-and explicit opt-in. This development environment does not establish the Amp
-integration compatibility described in [AMP.md](AMP.md).
+and explicit opt-in.
 
 ## Running the checks
 
