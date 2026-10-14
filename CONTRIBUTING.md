@@ -11,6 +11,20 @@ cd zenith
 uv sync
 ```
 
+### Amp orbs
+
+When this is the primary repository, `.agents/setup` prepares Python 3.13 (one
+of the CI versions) and installs runtime and development dependencies from
+`zenith/uv.lock` with `uv sync --locked`. Amp snapshots the environment for reuse;
+warm setup runs let uv check the existing environment without reinstalling it.
+The orb base image supplies uv. Run the commands below from `zenith/`; no shell
+activation is needed. `.agents/resume` intentionally performs no work.
+
+Setup does not install optional ACP adapters, authenticate providers, initialize
+target workspaces, or start missions. Live provider tests require separate setup
+and explicit opt-in. This development environment does not establish the Amp
+integration compatibility described in [AMP.md](AMP.md).
+
 ## Running the checks
 
 All three must pass before a PR can merge (they run in CI on Python 3.11–3.13):

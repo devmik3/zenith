@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+cd -- "$repo_root/zenith"
+
+# uv is included in the Amp orb base image. Use the newest Python minor in CI.
+echo 'Preparing Python 3.13'
+time uv python install 3.13
+
+echo 'Installing locked runtime and development dependencies'
+time uv sync --locked --python 3.13 --group dev
+
+echo 'Checking the installed CLI (no provider calls)'
+time .venv/bin/zenith --help

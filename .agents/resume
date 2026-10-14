@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# The virtualenv and uv cache survive snapshots and pause/resume.
+# No authentication, services, or dependency installs are needed on wake.

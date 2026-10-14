@@ -22,3 +22,6 @@ technical_report/*.log
 
 # OS
 .DS_Store
+
+# Amp orb portal metadata
+.amp/portals/*
