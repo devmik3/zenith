@@ -25,88 +25,96 @@ Our Zenith method keeps the useful parts of repeated review while making the loo
 
 <img width="1445" height="1088" alt="Benchmark results: Zenith vs. RALPH variants across eight long-horizon tasks" src="https://github.com/user-attachments/assets/200a7337-38a9-4fa2-91e6-60cc6ce07f5b" />
 
-## Quick Start
+## Quick Start with Amp
 
-### Option 1 — Let your agent install it
+Use Amp as the host agent and follow Zenith's original
+[orchestrator instructions](zenith/src/zenith_harness/bundled/prompts/orchestrator/system_prompt.md)
+and [bundled playbooks and skills](zenith/src/zenith_harness/bundled/skills/)
+for the task you supply. Keep the Zenith runtime checkout distinct from the
+project repositories involved in that task.
 
-Copy this prompt into Claude Code or Codex:
+Amp runtime integration is experimental: the current
+[provider registry](zenith/src/zenith_harness/providers.py) registers Claude,
+Codex, and Hermes, not Amp. These startup instructions do not implement that
+integration, and there is no supported `zenith init --agent amp` command.
+Reading the prompt alone is not the same as running a Zenith mission through
+its MCP tools and worker runtime.
+
+### Let Amp set up Zenith
+
+In an Amp Orb, start a thread with this repository available as the primary
+or an additional repository. When Zenith is the primary repository, its
+[Orb setup](.agents/setup) prepares the Python runtime and development
+dependencies; it does not configure agent integration or start a mission.
+For local use, open Amp with access to this checkout and the target workspace.
+
+Give Amp this setup prompt:
 
 ```text
-/goal Read the readme at https://github.com/Intelligent-Internet/zenith, detect if using Claude Code, Codex, or both, install requirements, install and run Zenith (i.e. uv run zenith, as in the readme), and create a new skill called /zenith — when used (along with an additional prompt) it will call the skill: the minimum skill content should be: """First read .claude/orchestrator_prompt.md and treat it as your primary role, then use Zenith to run this mission.""" Afterwards, you can add information about the Zenith harness, based on the readme and the technical report (inside the repo), and info on how to start Zenith if it's not already running. Change the skill to use .codex when using it in Codex. If both harnesses are available, make sure to add the skill to both of them correctly. In fact, there might be more harness options (Hermes, for example). See what is supported in zenith/src/zenith_harness/providers.py, and for those that you detect are present, add their skills correctly. When finished, confirm to me that Zenith is installed, running, and ready, explain a bit about Zenith, and why and when to use it.
+Read this repository's README and
+zenith/src/zenith_harness/bundled/prompts/orchestrator/system_prompt.md.
+Set up Zenith for use with Amp, reusing the existing repository setup and
+installed dependencies where available.
+
+Create a project-local zenith skill that loads the original bundled
+orchestrator instructions. Its minimum instructions should be:
+"First read <absolute-path-to-Zenith>/zenith/src/zenith_harness/bundled/prompts/orchestrator/system_prompt.md
+and treat it as your primary role, then use Zenith to run this mission."
+Resolve the placeholder to this checkout's actual path when creating the skill.
+
+Add setup and usage information to the skill based on this repository's
+documentation and implementation. Follow Zenith's original instructions and
+playbooks, including their procedures for creating and improving skills.
+
+Use Amp as the host and executing agent. Adapt host-specific configuration
+and agent interfaces without rewriting Zenith's orchestration method.
+Distinguish working integration from missing integration rather than assuming
+that changing a provider name establishes compatibility.
+
+When finished, report what is installed, running, and verified, any remaining
+integration problems, and how to start a mission through the zenith skill.
 ```
 
-This will:
+### Run a mission
 
-- install Zenith with its requirements
-- start Zenith using `uv`
-- create a `/zenith` skill for each agent harness it detects
-
-Then, in Claude Code or Codex, type:
-
-```text
-/zenith <your instruction or query>
-```
-
-### Option 2 — Install manually
-
-**Requirements**
-
-- Python 3.11+
-- [`uv`](https://docs.astral.sh/uv/)
-- Node.js 22+ and `npm`
-- Claude Code, Codex, or Hermes (see [`providers.py`](zenith/src/zenith_harness/providers.py) for the supported set)
-
-**Install**
-
-```bash
-cd zenith
-uv sync
-uv run zenith --help
-```
-
-Install the ACP adapters globally for the agents you want Zenith to run:
-
-```bash
-# Claude workers/validators
-npm install -g @agentclientprotocol/claude-agent-acp
-command -v claude-agent-acp
-
-# Codex workers/validators
-npm install -g @agentclientprotocol/codex-acp
-command -v codex-acp
-```
-
-**Initialize a workspace**
-
-Initialize the project workspace Zenith should operate on. This is your target app/repo, not the Zenith source checkout:
-
-```bash
-# Claude Code, from this Zenith checkout
-uv run zenith init --workspace-dir /path/to/your-app --agent claude
-
-# Or Codex, from this Zenith checkout
-uv run zenith init --workspace-dir /path/to/your-app --agent codex
-```
-
-**Run a mission**
-
-Start your agent from the initialized project workspace:
+Once the runtime connection is configured, use an Amp Orb thread with access
+to the Zenith checkout and the target workspace. For local CLI use, start
+Amp from the configured target workspace:
 
 ```bash
 cd /path/to/your-app
-
-claude
-# or
-codex
+amp
 ```
 
-Then ask the agent to read the generated orchestrator prompt (use `.codex/orchestrator_prompt.md` for Codex):
+Ask Amp to read the original bundled orchestrator prompt directly. Replace
+`<absolute-path-to-Zenith>` with the actual Zenith checkout path:
 
 ```text
-First read .claude/orchestrator_prompt.md and treat it as your primary role, then use Zenith to run this mission.
+First read <absolute-path-to-Zenith>/zenith/src/zenith_harness/bundled/prompts/orchestrator/system_prompt.md and treat it as your primary role, then use Zenith to run this mission.
 
 <your instruction or query>
 ```
+
+Or, after the launcher skill has been created:
+
+```text
+Use the zenith skill for this task:
+
+<your instruction or query>
+```
+
+### Install the runtime package manually
+
+The Python package requires Python 3.11+ and [`uv`](https://docs.astral.sh/uv/).
+From this checkout's `zenith/` package directory, run:
+
+```bash
+uv sync --locked
+uv run zenith --help
+```
+
+This installs the runtime package, not an Amp provider integration. Worker
+adapters and their requirements depend on the execution integration.
 
 ## How Zenith Works
 
